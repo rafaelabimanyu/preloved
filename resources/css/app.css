@@ -145,6 +145,51 @@ a {
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
 
+/*
+  Split layout helper — image+text side by side on desktop,
+  stacked (image on top, text below) on mobile.
+  Usage: <div class="split-layout"> <div class="split-col">img</div> <div class="split-col">text</div> </div>
+*/
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 540px;
+}
+.split-layout--text-first {
+  grid-template-columns: 1fr 1.4fr;
+}
+.split-layout--thirds {
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-2xl);
+}
+.split-col {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Principles row (about page) */
+.principles-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-2xl);
+  padding: var(--space-xl) 0;
+  border-top: 1px solid var(--clr-border-soft);
+  align-items: start;
+}
+
+/* Section header: label+title left, link right — collapses to column on mobile */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--clr-border-soft);
+  gap: var(--space-lg);
+}
+.section-header__left {}
+.section-header__right { text-align: right; flex-shrink: 0; }
+
 /* ── Tablet (640–1024px) ─────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .container        { padding: 0 var(--space-lg); }
@@ -152,6 +197,7 @@ a {
   .grid-4           { grid-template-columns: repeat(2, 1fr); }
   .grid-3           { grid-template-columns: repeat(2, 1fr); }
   .section          { padding: var(--space-2xl) 0; }
+  .split-layout--text-first { grid-template-columns: 1fr 1fr; gap: var(--space-2xl); }
 }
 
 /* ── Mobile (< 640px) ───────────────────────────────────────────────────── */
@@ -162,6 +208,30 @@ a {
   .grid-4           { grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); }
   .section          { padding: var(--space-xl) 0; }
   .section--sm      { padding: var(--space-lg) 0; }
+
+  /* Split layouts → single column, image first */
+  .split-layout,
+  .split-layout--text-first {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  /* Text-first variant: swap order so image is visually on top */
+  .split-layout--text-first .split-col:first-child { order: 2; }
+  .split-layout--text-first .split-col:last-child  { order: 1; }
+
+  /* Principles row → single column on mobile */
+  .principles-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  /* Section header → stack vertically */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  .section-header__right { text-align: left; }
 }
 
 /* ─── Navbar ─────────────────────────────────────────────────────────────── */
@@ -332,6 +402,7 @@ a {
   align-items: center;
   gap: var(--space-sm);
   padding: 12px 28px;
+  min-height: 44px;              /* tap-friendly on mobile */
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.2em;
@@ -660,7 +731,16 @@ a {
 
 @media (max-width: 640px) {
   .footer { padding: var(--space-2xl) 0 var(--space-lg); margin-top: var(--space-2xl); }
-  .footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  /* Brand col full-width, then 2-col for links */
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+  /* Restore 2-col for the link columns only (last 3 children) */
+  .footer__grid > *:not(:first-child) {
+    display: block;
+  }
+  .footer__grid { display: flex; flex-direction: column; gap: var(--space-lg); }
   .footer__bottom { flex-direction: column; gap: var(--space-sm); text-align: center; }
 }
 
@@ -993,9 +1073,23 @@ a {
   .page-header { padding: var(--space-xl) 0; }
   .page-top { padding-top: 70px; }
 
-  /* Hero mobile */
+  /* Hero mobile — shorter, still immersive */
   .hero { min-height: 90vh; }
   .hero__content { padding: var(--space-2xl) 0; }
+
+  /* Hero year stamp — hide on very small screens to avoid overlap */
+  .hero__content > div[style*="position:absolute"] { display: none; }
+
+  /* Hero CTAs — wrap so buttons stack vertically on tiny screens */
+  .hero-ctas {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  .hero-ctas .btn {
+    width: 100%;
+    justify-content: center;
+  }
 
   /* Item detail gallery — full width */
   .gallery-thumb { width: 56px; height: 70px; }
@@ -1003,8 +1097,21 @@ a {
   /* Btn full-width on mobile for CTAs */
   .btn--mobile-full { width: 100%; justify-content: center; }
 
-  /* Meta table font */
+  /* Meta table rows */
   .meta-row { padding: 10px var(--space-md); }
+
+  /* Manifesto — increase padding on mobile */
+  .manifesto {
+    padding: 0 var(--space-xs);
+    line-height: 1.8;
+  }
+
+  /* Editorial item-detail grid — image first on mobile */
+  .grid-2.grid-editorial {
+    grid-template-columns: 1fr;
+  }
+  .grid-2.grid-editorial > *:first-child { order: 1; } /* gallery first */
+  .grid-2.grid-editorial > *:last-child  { order: 2; } /* details second */
 }
 
 /* ─── Mobile filter toggle button ──────────────────────────────────────── */

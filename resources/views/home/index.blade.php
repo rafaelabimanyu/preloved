@@ -58,7 +58,7 @@
         </p>
 
         {{-- CTAs --}}
-        <div class="flex gap-md animate-fade-up delay-4" style="margin-top:var(--space-2xl);">
+        <div class="flex gap-md hero-ctas animate-fade-up delay-4" style="margin-top:var(--space-2xl);">
           @if ($activeDrop)
             <a href="{{ route('drops.show', $activeDrop) }}" class="btn btn--primary">
               Explore Drop
@@ -119,10 +119,10 @@
 ══════════════════════════════════════════════════════════════════════════ --}}
 @if ($activeDrop)
 <section style="border-top:1px solid var(--clr-border-soft);border-bottom:1px solid var(--clr-border-soft);">
-  <div style="display:grid;grid-template-columns:1fr 1fr;min-height:540px;">
+  <div class="split-layout">
 
     {{-- Image half --}}
-    <div style="overflow:hidden;position:relative;background:var(--clr-bg-2);">
+    <div class="split-col" style="background:var(--clr-bg-2);">
       <img src="{{ $activeDrop->coverImageUrl() }}"
            alt="{{ $activeDrop->title }}"
            style="width:100%;height:100%;object-fit:cover;filter:brightness(0.88) saturate(0.9);
@@ -136,7 +136,7 @@
 
     {{-- Text half --}}
     <div style="display:flex;flex-direction:column;justify-content:center;
-                padding:var(--space-3xl);background:var(--clr-bg-2);" data-animate>
+                padding:var(--space-3xl) var(--space-2xl);background:var(--clr-bg-2);" data-animate>
 
       <p class="t-label mb-xl" style="color:var(--clr-stone);">
         Current Drop &nbsp;·&nbsp; {{ $activeDrop->released_at?->format('F Y') }}
@@ -174,14 +174,12 @@
 <section class="section">
   <div class="container">
 
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;
-                margin-bottom:var(--space-2xl);padding-bottom:var(--space-lg);
-                border-bottom:1px solid var(--clr-border-soft);">
-      <div>
+    <div class="section-header">
+      <div class="section-header__left">
         <p class="t-label mb-sm" style="color:var(--clr-stone);">01 — Archive</p>
         <h2 class="t-headline">Available now</h2>
       </div>
-      <div style="text-align:right;">
+      <div class="section-header__right">
         <a href="{{ route('catalog.index') }}" class="btn--text">
           View all pieces
         </a>
@@ -213,11 +211,11 @@
                 padding:var(--space-3xl) 0;">
   <div class="container">
 
-    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:var(--space-3xl);
-                align-items:center;" class="grid-editorial">
+    {{-- text-first: text column left, portrait image right --}}
+    <div class="split-layout split-layout--text-first">
 
       {{-- Text — leads the eye first on editorial layouts --}}
-      <div data-animate>
+      <div class="split-col" data-animate style="display:flex;flex-direction:column;justify-content:center;padding:var(--space-xl) 0;">
         <p class="t-label mb-lg" style="color:var(--clr-stone);">
           02 — Editorial &nbsp;·&nbsp;
           {{ $latestLookbook->published_at?->format('M Y') }}
@@ -240,7 +238,7 @@
       </div>
 
       {{-- Portrait image — taller, cinematic --}}
-      <div style="aspect-ratio:3/4;overflow:hidden;" data-animate>
+      <div class="split-col" style="aspect-ratio:3/4;" data-animate>
         <img src="{{ $latestLookbook->coverImageUrl() }}"
              alt="{{ $latestLookbook->title }}"
              loading="lazy"
@@ -262,16 +260,16 @@
 <section class="section">
   <div class="container">
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);" class="grid-editorial">
+    <div class="split-layout" style="gap:var(--space-3xl);min-height:auto;align-items:start;">
 
-      <div data-animate>
+      <div class="split-col" data-animate style="padding:var(--space-xl) 0;">
         <p class="t-label mb-xl" style="color:var(--clr-stone);">03 — Why preloved</p>
         <h2 class="t-headline" style="max-width:380px;line-height:1.2;">
           A different way<br /><em>to get dressed.</em>
         </h2>
       </div>
 
-      <div data-animate style="display:flex;flex-direction:column;gap:var(--space-xl);justify-content:center;">
+      <div class="split-col" data-animate style="display:flex;flex-direction:column;gap:var(--space-xl);justify-content:center;">
         @foreach ([
           ['Sustainable by design',  'Every piece we sell is one less garment manufactured. No packaging waste, no new emissions.'],
           ['One of a kind, always',  'Each item is a single piece. No restocks. No duplicates. The archive moves forward, not backward.'],
@@ -317,13 +315,19 @@
     filter: brightness(0.95) saturate(1.0) !important;
   }
 
-  /* Drop feature section — mobile collapse */
-  @media (max-width: 768px) {
-    section > div[style*="grid-template-columns:1fr 1fr"] {
-      grid-template-columns: 1fr;
+  /* Split col image — maintain aspect on mobile */
+  @media (max-width: 640px) {
+    .split-layout--text-first .split-col[style*="aspect-ratio"] {
+      aspect-ratio: 4/3;  /* wider crop on mobile, less tall */
     }
-    section > div[style*="grid-template-columns:1fr 1.4fr"] {
-      grid-template-columns: 1fr;
+    .split-layout .split-col img {
+      max-height: 60vh;
+      width: 100%;
+      object-fit: cover;
+    }
+    /* Drop section text padding — reduce on mobile */
+    .split-layout > div[style*="padding:var(--space-3xl)"] {
+      padding: var(--space-xl) var(--space-md);
     }
   }
 </style>

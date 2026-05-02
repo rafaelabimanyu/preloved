@@ -61,12 +61,14 @@
 {{-- ── DROP ITEMS ─────────────────────────────────────────────────────── --}}
 <section class="section">
   <div class="container">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--space-xl);">
-      <div>
+    <div class="section-header">
+      <div class="section-header__left">
         <p class="t-label mb-sm" style="color:var(--clr-stone);">{{ __('drops.show.selection_label') }}</p>
         <h2 class="t-title">{{ $drop->items->count() }} piece{{ $drop->items->count() !== 1 ? 's' : '' }}</h2>
       </div>
-      <a href="{{ route('catalog.index') }}" class="btn--text">{{ __('drops.show.open_archive') }}</a>
+      <div class="section-header__right">
+        <a href="{{ route('catalog.index') }}" class="btn--text">{{ __('drops.show.open_archive') }}</a>
+      </div>
     </div>
 
     @if ($drop->items->isEmpty())

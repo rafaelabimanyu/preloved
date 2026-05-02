@@ -368,3 +368,13 @@
   .admin-stats { grid-template-columns: 1fr 1fr; }
   .admin-page-title { font-size: 1.1rem; }
 }
+
+/* ─── Extra small (< 380px) ────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .admin-stats { grid-template-columns: 1fr; }
+  .admin-content { padding: 16px 12px; }
+  .admin-header  { padding: 12px 12px; gap: var(--space-sm); }
+  .admin-header__actions { gap: var(--space-sm); }
+  /* Action links — stack on very small screens */
+  .admin-table td { padding: 12px 10px; font-size: 0.8rem; }
+}
